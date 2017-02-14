@@ -20,7 +20,6 @@ D: 224-239
 ip_addr = raw_input("\nEnter IP address in dotted decimal notation: ")
 
 first_byte = int(ip_addr.split(".")[0])
-#bin(int(prompt.split(".")[0])).split("0b")[1]
 
 if first_byte in range(0, 224):
 	print "\nunicast\n"
