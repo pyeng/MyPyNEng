@@ -40,3 +40,17 @@ for int in fast_int['access']:
         else:
             print ' %s' % command
 
+for int in fast_int["trunk"]:
+    print 'interface FastEthernet' + int
+    for command in trunk_template:
+        if command.endswith("allowed vlan"):
+            if fast_int["trunk"][int][0] == "add":
+                #vlan = ",".join(fast_int["trunk"][int][1:])
+                #print vlan
+                print " %s add %s" % (command, ",".join(fast_int["trunk"][int][1:]))
+            if fast_int["trunk"][int][0] == "only":
+                print " %s %s" % (command, ",".join(fast_int["trunk"][int][1:]))
+            if fast_int["trunk"][int][0] == "del":
+                print " %s remove %s" % (command, ",".join(fast_int["trunk"][int][1:]))
+        else:
+            print ' %s' % command
