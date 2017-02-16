@@ -10,3 +10,11 @@
 
 Между строками не должно быть дополнительного символа перевода строки.
 '''
+from sys import argv
+
+file = argv[1]
+
+with open(file, "r") as f:
+	for line in f:
+		if "!" not in line:
+			print line.strip()
