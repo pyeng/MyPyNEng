@@ -16,4 +16,19 @@ Outbound Interface:		FastEthernet0/0
 
 with open('ospf.txt', 'r') as f:
     for line in f:
-        print line
+        line = (line.strip()).split()
+        if line[0] == "O":
+        	protocol = "OSPF"
+        prefix = line[1]
+        metric = line[2]
+        next_hop = line[4].strip(",")
+        update = line[5].strip(",")
+        out_int = line[6]
+        print """
+Protocol:             {}
+Prefix:               {}
+AD/Metric:            {}
+Next-Hop:             {}
+Last update:          {}
+Outbound Interface:   {}
+			""".format(protocol, prefix, metric, next_hop, update, out_int)
