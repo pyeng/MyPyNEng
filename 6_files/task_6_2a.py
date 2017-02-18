@@ -9,13 +9,17 @@
   которые указаны в списке ignore.
 '''
 
-ignore = ['duplex', 'alias', 'Current configuration']
-
 from sys import argv
+
+ignore = ['duplex', 'alias', 'Current configuration']
 
 file = argv[1]
 
 with open(file, "r") as f:
 	for line in f:
-		 line.startswitch("!") not in line:
+		if line.startswith("!"):
+			continue
+		elif [elem for elem in ignore if elem in line]:
+			continue
+		else:
 			print line.strip()
