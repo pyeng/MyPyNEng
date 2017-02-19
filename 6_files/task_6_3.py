@@ -16,3 +16,13 @@
  300    aabb.cc80.7000     Gi0/7
 
 '''
+
+from sys import argv
+
+file = argv[1]
+
+with open(file, "r") as f:
+	for line in f:
+		if len((line.strip()).split()) == 4 and "-" not in line:
+			vid, mac, junk, port =  (line.strip()).split()
+			print "{:4} {:15} {:15}".format(vid, mac, port)
