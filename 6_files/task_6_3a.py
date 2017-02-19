@@ -24,10 +24,5 @@ with open(file, "r") as f:
 
 table.sort()
 
-
-
-
 for item in table:
 	print "{:6} {:16} {:8}".format(item[0], item[1], item[2])
-
-#print table
