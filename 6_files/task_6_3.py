@@ -25,4 +25,4 @@ with open(file, "r") as f:
 	for line in f:
 		if len((line.strip()).split()) == 4 and "-" not in line:
 			vid, mac, junk, port =  (line.strip()).split()
-			print "{:4} {:15} {:15}".format(vid, mac, port)
+			print "{:6} {:16} {:8}".format(vid, mac, port)
