@@ -15,4 +15,22 @@
 
 '''
 
+from sys import argv
+
 ignore = ['duplex', 'alias', 'Current configuration']
+
+src_file, dst_file = argv[1:]
+#dst_file = "config_sw1_cleared.txt"
+save_to_file = []
+
+with open(src_file, "r") as f:
+	for line in f:
+		if [elem for elem in ignore if elem in line]:
+			continue
+		else:
+			save_to_file.append(line.strip())
+
+cfg_lines = "\n".join(save_to_file)
+
+with open(dst_file, "w") as f:
+	f.write(cfg_lines)
