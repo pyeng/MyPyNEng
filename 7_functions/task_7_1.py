@@ -37,7 +37,7 @@ def generate_access_config(access):
       print "\ninterface {}".format(intf)
       for command in access_template:
         if command.endswith("access vlan"):
-          print "{} {}".format(command, access_dict[intf])
+          print "{} {}".format(command, access[intf])
         else:
           print "{}".format(command)
 
