@@ -53,7 +53,7 @@ def generate_access_config(access, psecurity=False):
         command_dict[intf] = []
         for command in access_template:
             if command.endswith("access vlan"):
-                command_dict[intf].append("{} {}".format(command, access_dict[intf]))
+                command_dict[intf].append("{} {}".format(command, access[intf]))
             else:
                 command_dict[intf].append(command)
         if psecurity == True:
