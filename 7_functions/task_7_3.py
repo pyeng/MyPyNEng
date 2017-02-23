@@ -20,6 +20,7 @@
 """
 
 from sys import argv
+from pprint import pprint
 
 def get_int_vlan_map(config):
     """
@@ -40,29 +41,36 @@ def get_int_vlan_map(config):
     trunk_port_dict = {}
 
     with open(config, "r") as f:
-
-        conf = (f.read()).split("!")
-
-        for block in conf:
-            block = block.strip()
-
-            if block.startswith("interface FastEthernet"):
-                intf = block.split()[1]
-               
-                for line in block.split("\n"):
-
-                    if "switchport mode access" in line:
-                        access_port_dict[intf] = []
+        for conf_section in (f.read()).split("!"):
+            if "interface FastEthernet" in conf_section:
+                if "switchport access" in conf_section:
+                    for line in conf_section.split("\n"):
+                        if line.startswith("interface FastEtherne"):
+                            intf = (line.strip()).split()[1]
+                            access_port_dict[intf] = []
+                        if "switchport access vlan" in line:
+                            vlan = (line.split()[-1])
+                            access_port_dict[intf] = vlan                        
                     
-                    elif "switchport mode trunk" in line:
-                        trunk_port_dict[intf] = []
-                    
+                elif "switchport trunk" in conf_section:
+                    for line in conf_section.split("\n"):
+                        if line.startswith("interface FastEtherne"):
+                            intf = (line.strip()).split()[1]
+                            trunk_port_dict[intf] = []
+                        if "switchport trunk allowed vlan" in line:
+                            vlan = (line.split()[-1]).split()
+                            trunk_port_dict[intf] = vlan
 
-    print access_port_dict
-    print trunk_port_dict
-                
+
+    return (access_port_dict, trunk_port_dict)
+    
 
 
 config_file = argv[1]
 
-get_int_vlan_map(config_file)
+
+result = get_int_vlan_map(config_file)
+
+print
+pprint(result)
+print
