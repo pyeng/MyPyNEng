@@ -62,6 +62,7 @@ def get_int_vlan_map(config):
     print trunk_port_dict
                 
 
+
 config_file = argv[1]
 
 get_int_vlan_map(config_file)
