@@ -19,6 +19,8 @@
 Проверить работу функции на примере файла config_sw1.txt
 """
 
+from sys import argv
+
 def get_int_vlan_map(config):
     """
     config - имя конфигурационного файла коммутатора
@@ -34,4 +36,32 @@ def get_int_vlan_map(config):
         "FastEthernet0/4":[17] }
 
     """
-    pass
+    access_port_dict = {}
+    trunk_port_dict = {}
+
+    with open(config, "r") as f:
+
+        conf = (f.read()).split("!")
+
+        for block in conf:
+            block = block.strip()
+
+            if block.startswith("interface FastEthernet"):
+                intf = block.split()[1]
+               
+                for line in block.split("\n"):
+
+                    if "switchport mode access" in line:
+                        access_port_dict[intf] = []
+                    
+                    elif "switchport mode trunk" in line:
+                        trunk_port_dict[intf] = []
+                    
+
+    print access_port_dict
+    print trunk_port_dict
+                
+
+config_file = argv[1]
+
+get_int_vlan_map(config_file)
