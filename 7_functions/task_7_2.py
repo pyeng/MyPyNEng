@@ -36,17 +36,17 @@ def generate_trunk_config(trunk):
         print "\ninterface {}".format(intf)
         for command in trunk_template:
             if command.endswith("allowed vlan"):
-                for vlan in trunk[intf]:
-                    vlan_list = ",".join(vlan)
-                    print "{} {}".format(command, vlan_list)
+                #for vlan in trunk[intf]:
+                    #vlan_list = ",".join(vlan)
+                print "{} {}".format(command, ",".join([str(vlan) for vlan in trunk[intf]]))
             else:
                 print "{}".format(command)
-
 
 
 trunk_dict = { "FastEthernet0/1":[10,20,30],
                "FastEthernet0/2":[11,30],
                "FastEthernet0/4":[17] }
+
 
 generate_trunk_config(trunk_dict)
 
