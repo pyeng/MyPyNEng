@@ -56,7 +56,8 @@ def config_to_dict(config):
     config_dict = {}
     with open(config, "r") as f:
         for line in f:
-            if not line.startswith("!"):
+            check_ignore = ignore_command(line, ignore)
+            if not line.startswith("!") and not check_ignore:
                 line = line.strip("\r")
                 if not line.startswith(" "):
                     top_command = line.strip()
