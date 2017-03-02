@@ -26,6 +26,9 @@
 
 '''
 
+from sys import argv
+from pprint import pprint
+
 ignore = ['duplex', 'alias', 'Current configuration']
 
 def check_ignore(command, ignore):
@@ -50,4 +53,22 @@ def config_to_dict(config):
     """
     config - имя конфигурационного файла
     """
-    pass
+    config_dict = {}
+    with open(config, "r") as f:
+        for line in f:
+            check = check_ignore(line, ignore)
+            if not "!" in line and not check:
+                line = line.strip("\r")
+                if not line.startswith(" "):
+                    top_command = line.strip()
+                    config_dict[top_command] = []     
+                elif line.startswith(" "):
+                    config_dict[top_command].append(line.strip())
+    return config_dict
+               
+    
+config_file = argv[1]
+
+
+result = config_to_dict(config_file)
+pprint(result)
