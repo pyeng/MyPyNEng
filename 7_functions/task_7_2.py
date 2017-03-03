@@ -21,6 +21,8 @@
 Проверить работу функции на примере словаря trunk_dict.
 """
 
+from pprint import pprint
+
 def generate_trunk_config(trunk):
     """
     trunk - словарь trunk-портов, для которых необходимо сгенерировать конфигурацию
@@ -32,13 +34,16 @@ def generate_trunk_config(trunk):
                       "switchport trunk native vlan 999",
                       "switchport trunk allowed vlan"]
 
+    result = []
+
     for intf in trunk:
-        print "\ninterface {}".format(intf)
+        result.append("interface {}".format(intf))
         for command in trunk_template:
             if command.endswith("allowed vlan"):
-                print "{} {}".format(command, ",".join([str(vlan) for vlan in trunk[intf]]))
+                result.append(" {} {}".format(command, ",".join([str(vlan) for vlan in trunk[intf]])))
             else:
-                print "{}".format(command)
+                result.append(" {}".format(command))
+    return result
 
 
 trunk_dict = { "FastEthernet0/1":[10,20,30],
@@ -46,5 +51,7 @@ trunk_dict = { "FastEthernet0/1":[10,20,30],
                "FastEthernet0/4":[17] }
 
 
-generate_trunk_config(trunk_dict)
+trunk_command_list = generate_trunk_config(trunk_dict)
+
+pprint(trunk_command_list)
 
