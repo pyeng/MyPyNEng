@@ -26,16 +26,31 @@ def generate_access_config(access, psecurity=False):
                      "switchport port-security violation restrict",
                      "switchport port-security"]
 
+    result = []
+    
     for intf in access:
-        print "\ninterface {}".format(intf)
+        result.append("interface {}".format(intf))
+
         for command in access_template:
             if command.endswith("access vlan"):
-                print "{} {}".format(command, access[intf])
+                result.append(" {} {}".format(command, access[intf]))
+
             else:
-                print "{}".format(command)
+                 result.append(" {}".format(command))
+
         if psecurity == True:
             for command in port_security:
-                print "{}".format(command)
+                result.append(" {}".format(command))
+
+    return result
+
+
+access_dict = { "FastEthernet0/12":10,
+                "FastEthernet0/14":11,
+                "FastEthernet0/16":17,
+                "FastEthernet0/17":150 }
+
+access_command_list = generate_access_config(access_dict, True)
 
 
 #task_7_2.py
@@ -50,13 +65,16 @@ def generate_trunk_config(trunk):
                       "switchport trunk native vlan 999",
                       "switchport trunk allowed vlan"]
 
+    result = []
+
     for intf in trunk:
-        print "\ninterface {}".format(intf)
+        result.append("interface {}".format(intf))
         for command in trunk_template:
             if command.endswith("allowed vlan"):
-                print "{} {}".format(command, ",".join([str(vlan) for vlan in trunk[intf]]))
+                result.append(" {} {}".format(command, ",".join([str(vlan) for vlan in trunk[intf]])))
             else:
-                print "{}".format(command)
+                result.append(" {}".format(command))
+    return result
 
 #task_7_3.py
 def get_int_vlan_map(config):
