@@ -13,6 +13,8 @@
 с генерацией конфигурации port-security и без.
 """
 
+from pprint import pprint
+
 def generate_access_config(access, psecurity=False):
     """
     access - словарь access-портов,
@@ -38,21 +40,25 @@ def generate_access_config(access, psecurity=False):
                      "switchport port-security violation restrict",
                      "switchport port-security"]
 
+    result = []
+    
     for intf in access:
-        print "\ninterface {}".format(intf)
+        result.append("interface {}".format(intf))
         for command in access_template:
             if command.endswith("access vlan"):
-                print "{} {}".format(command, access[intf])
+                result.append(" {} {}".format(command, access[intf]))
             else:
-                print "{}".format(command)
+                 result.append(" {}".format(command))
         if psecurity == True:
             for command in port_security:
-                print "{}".format(command)
-
+                result.append(" {}".format(command))
+    return result
 
 access_dict = { "FastEthernet0/12":10,
                 "FastEthernet0/14":11,
                 "FastEthernet0/16":17,
                 "FastEthernet0/17":150 }
 
-generate_access_config(access_dict, True)
+access_command_list = generate_access_config(access_dict, True)
+
+pprint(access_command_list)
