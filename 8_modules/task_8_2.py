@@ -26,3 +26,41 @@ R6           Fa 0/2          143           R S I           2811       Fa 0/0
 Проверить работу функции на содержимом файла sw1_sh_cdp_neighbors.txt
 
 """
+
+from sys import argv
+from pprint import pprint
+
+cdp_file = argv[1]
+
+def parse_cdp_neighbors(cdp_neigh):
+
+	interconnection = {}
+	
+	# iterate over each line in cdp
+	for line in cdp_neigh.split("\n"):
+		
+		#find local hostname
+		if ">" in line:
+			local_host = line.split(">")[0]
+		
+		# discard useless line	
+		elif line.startswith("Capability") or "Repeater" in line:
+			pass
+		
+		# find other info (remote hostname, local and remote interfaces)	
+		elif len(line.split()) > 9:
+			remote_host = line.split()[0]
+			local_int = "".join(line.split()[1:3])
+			remote_int = "".join(line.split()[-2:])
+			interconnection[local_host, local_int] = (remote_host, remote_int)
+
+	return interconnection
+
+
+with open(cdp_file, "r") as f:
+	cdp_data = f.read()
+	result = parse_cdp_neighbors(cdp_data)
+
+print
+pprint(result)
+print
