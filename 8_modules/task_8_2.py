@@ -27,10 +27,7 @@ R6           Fa 0/2          143           R S I           2811       Fa 0/0
 
 """
 
-from sys import argv
-from pprint import pprint
 
-cdp_file = argv[1]
 
 def parse_cdp_neighbors(cdp_neigh):
 
@@ -57,10 +54,17 @@ def parse_cdp_neighbors(cdp_neigh):
 	return interconnection
 
 
-with open(cdp_file, "r") as f:
-	cdp_data = f.read()
-	result = parse_cdp_neighbors(cdp_data)
+if __name__ == "__main__":
 
-print
-pprint(result)
-print
+	from sys import argv
+	from pprint import pprint
+
+	cdp_file = argv[1]
+
+	with open(cdp_file, "r") as f:
+		cdp_data = f.read()
+		result = parse_cdp_neighbors(cdp_data)
+
+	print
+	pprint(result)
+	print
