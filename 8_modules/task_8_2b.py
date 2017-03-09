@@ -22,3 +22,29 @@
 > pip install graphviz
 """
 
+from task_8_2 import parse_cdp_neighbors
+from draw_network_graph import draw_topology
+
+if __name__ == "__main__":
+
+	from sys import argv
+
+	cdp_file = argv[1:]
+
+	full_topology = {}
+
+	for file in cdp_file:
+		
+		#parsing CDP tables		
+		with open(file, "r") as f:
+			cdp_data = f.read()
+			partial_topology = parse_cdp_neighbors(cdp_data)
+			full_topology.update(partial_topology)
+
+			#delete duplicate connections
+			for i in full_topology.keys():
+				if i in full_topology.values():
+					del(full_topology[i])
+
+	#generate graph
+	draw_topology(full_topology)
