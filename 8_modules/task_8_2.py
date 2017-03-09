@@ -41,11 +41,11 @@ def parse_cdp_neighbors(cdp_neigh):
 			local_host = line.split(">")[0]
 		
 		# discard useless line	
-		elif line.startswith("Capability") or "Repeater" in line:
+		elif line.startswith("Capability") or "Repeater" in line or "Capability" in line:
 			pass
-		
+
 		# find other info (remote hostname, local and remote interfaces)	
-		elif len(line.split()) > 9:
+		elif len(line.split()) >= 9:
 			remote_host = line.split()[0]
 			local_int = "".join(line.split()[1:3])
 			remote_int = "".join(line.split()[-2:])
