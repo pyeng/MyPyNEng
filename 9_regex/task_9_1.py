@@ -14,3 +14,22 @@
 Проверить работу скрипта на примере вывода команды sh ip int br (файл sh_ip_int_br.txt).
 Например, попробуйте вывести информацию только по интерфейсу FastEthernet0/1.
 '''
+
+from sys import argv
+from pprint import pprint
+from re import compile
+
+filename, regexp = argv[1:3]
+
+exp = compile(regexp)
+
+result =  []
+
+with open(filename, "r") as f:
+	for line in f:
+		if exp.search(line):
+			result.append(line.strip())
+
+print
+pprint(result)
+print 
