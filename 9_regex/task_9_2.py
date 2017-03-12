@@ -19,3 +19,32 @@
 Обратите внимание, что в данном случае, мы можем не проверять корректность IP-адреса,
 диапазоны адресов и так далее, так как мы обрабатываем вывод команды, а не ввод пользователя.
 '''
+
+from sys import argv
+from re import compile
+
+def return_ip(file, exp):
+
+	with open(file, "r") as f:
+	
+		exp = compile(exp)
+	
+		for line in f:
+	
+			match = exp.search(line)
+	
+			if match:
+
+				ip.append(match.group())
+	
+	return ip
+
+
+filename = argv[1:][0]
+regexp = "\d+\.\d+\.\d+\.\d+"
+
+ip = []
+
+result = return_ip(filename, regexp)
+
+print result
