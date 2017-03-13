@@ -23,3 +23,28 @@
 диапазоны адресов и так далее, так как мы обрабатываем конфигурацию, а не ввод пользователя.
 '''
 
+from sys import argv
+from re import compile
+from pprint import pprint
+
+
+def parse_cfg(file, exp):
+	
+	with open(file, "r") as f:
+	
+		for line in f:
+	
+			if line.startswith(" ip address"):
+				match = exp.search(line).groups()
+				ip_addr.append(match)
+	
+	return ip_addr
+
+
+filename = argv[1]
+regexp = compile("([\d+\.]+)\s+([\d+\.]+)")
+ip_addr = []
+
+parse_cfg(filename, regexp)
+
+pprint(ip_addr)
