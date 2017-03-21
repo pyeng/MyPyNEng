@@ -49,5 +49,5 @@ regexp = compile("""(?P<intf>\S+)\s+(?P<address>\S+)\s+[\w\s]+\
 (?P<status>up|down|administratively down)\s+(?P<protocol>up|down)""")
 
 result = parse_show(filename, regexp)
-
-pprint(result)
+if __name__ == "__main__":
+	pprint(result)
