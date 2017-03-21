@@ -22,3 +22,47 @@ interface Ethernet0/1
 Ethernet0/1 соответствует список из двух кортежей.
 '''
 
+
+from sys import argv
+from re import compile
+from pprint import pprint
+
+
+def parse_cfg(file, exp):
+	#open file
+	with open(file, "r") as f:
+		# and read file
+		line = f.read()
+		#split by "!"
+		for section in (line.strip()).split("!"):
+			#leave only interface section with configured ip addr
+			if ((section.strip()).startswith("interface") and "ip addr" in section) \
+				and "no ip addr" not in section:
+				#list with ip address 
+				ip_intf = []
+				
+				for i in (section.strip()).split("\n"):
+					#find interface name
+					if "interface " in i:
+						intf = (i.split("interface")[1]).strip()
+						ip_addr[intf] = ()
+					#find ip addr and mask with regexp
+					if "ip addr" in i:
+						match = exp.search(i)
+						ip = match.group("ip")
+						mask = match.group("mask")
+						ip_intf.append((ip, mask))
+				#filled list with ip addr
+				ip_addr[intf] = ip_intf
+
+	return ip_addr
+
+
+filename = argv[1]
+regexp = compile("(?P<ip>[\d+\.]+)\s+(?P<mask>[\d+\.]+)")
+
+ip_addr = {}
+
+parse_cfg(filename, regexp)
+
+pprint(ip_addr)

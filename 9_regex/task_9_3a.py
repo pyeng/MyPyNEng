@@ -37,7 +37,7 @@ def parse_cfg(file, exp):
 				for i in (section.strip()).split("\n"):
 					#find interface name
 					if "interface " in i:
-						intf = i.split("interface")[1]
+						intf = i.split("interface")[1].strip()
 						ip_addr[intf] = ()
 					#find ip addr and mask with regexp
 					if "ip addr" in i:
