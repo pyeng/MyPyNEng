@@ -22,4 +22,32 @@
 
 Проверить работу функции на примере файла sh_ip_int_br_2.txt.
 '''
+#import modules 
+from sys import argv
+from re import compile
+from pprint import pprint
 
+#func expect filename and regexp, than return -- intf, ip_addr, status, protocol
+def parse_show(file, exp):
+	#dict for data
+	ip_int = []
+	#open file
+	with open(filename, "r") as f:
+		#read file by line
+		for line in f:
+			#leave only line that start with "F", "G", "T", "L" (FastEthernet, 
+			#	GigaEthernet, TenEthernet, Loopback)
+			if line[0] in ["F", "G", "T", "L"]:
+				#find: Interface, IP-Address, Status, Protocol
+				match = (exp.search(line)).groups()
+				ip_int.append(match)
+
+	return ip_int
+
+filename = argv[1]
+regexp = compile("""(?P<intf>\S+)\s+(?P<address>\S+)\s+[\w\s]+\
+(?P<status>up|down|administratively down)\s+(?P<protocol>up|down)""")
+
+result = parse_show(filename, regexp)
+
+pprint(result)
