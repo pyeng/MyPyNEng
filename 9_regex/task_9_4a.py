@@ -21,4 +21,30 @@
 
 '''
 
+import task_9_4
+from pprint import pprint
+
+def convert_to_dict(fields, ip_int):
+	#list for dict with int, addr. status, protocol
+	int_list = []
+	#obtain tuple from task_9_4
+	for line in ip_int:
+		#dict for data
+		int_dict = {}
+		#iterator
+		for position, i in enumerate(line, 0):
+			#add key/value to dict
+			int_dict[fields[position]] = i
+		#append dict to list
+		int_list.append(int_dict)
+	#return final result
+	return int_list
+	
+
 headers = ['interface', 'address', 'status', 'protocol']
+
+parse_show = task_9_4.result
+
+result = convert_to_dict(headers, parse_show)
+
+pprint(result)
