@@ -42,9 +42,58 @@
 '''
 
 import glob
+import re
+import csv
+
+
+def parse_sh_version(output):
+    #regexp that fing "ios", "uptime", "image"
+    regexp = re.compile("""\
+(?P<ios>1[2|5]\.\d+\(\w+\)\w+)([\S\s]*)\
+(?P<uptime>\s\d+\sdays.\s\d+\shours.\s\d+\sminutes)([\S\s]*)\
+(?P<image>flash:[^"]+|disk.:[^"]+)""")
+
+    match = (regexp.search(output)).groupdict()
+    #the list that will contain result of the loop 
+    sh_version = []
+    
+    for i in ("ios", "image", "uptime"):
+        sh_version.append(match[i])
+    #return the result of that func
+    return sh_version
+
+
+def write_to_csv(file, data):
+    
+    with open(file, "w") as f:
+        writer = csv.writer(f, quoting=csv.QUOTE_NONNUMERIC)
+        
+        for row in data:
+            writer.writerow(row)
+
 
 sh_version_files = glob.glob('sh_vers*')
 #print sh_version_files
 
+#name of file with saved data
+filename = "routers_inventory.csv"
+#first line/list headers
 headers = ['hostname', 'ios', 'image', 'uptime']
+#create list of lists
+ll = []
+#and add first list == headers
+ll.append(headers)
 
+for files in sh_version_files:
+    
+    hostname = (files.split("sh_version_"))[1].strip(".txt")
+    
+    with open(files, "r") as f:
+        content = f.read()
+    
+    l = parse_sh_version(content)
+    l.insert(0, hostname)
+    ll.append(l)
+
+#write data to the file
+write_to_csv(filename, ll)
