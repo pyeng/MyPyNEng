@@ -8,12 +8,14 @@
 - generate_trunk_config - генерирует конфигурацию для trunk-портов,
                            на основе словаря trunk из файла sw_templates.yaml
 - generate_ospf_config - генерирует конфигурацию ospf, на основе словаря ospf из файла templates.yaml
-- generate_mngmt_config - генерирует конфигурацию менеджмент настроек, на основе словаря mngmt из файла templates.yaml
+- generate_mngmt_config - генерирует конфигурацию менеджмент настроек, 
+                         на основе словаря mngmt из файла templates.yaml
 - generate_alias_config - генерирует конфигурацию alias, на основе словаря alias из файла templates.yaml
 - generate_switch_config - генерирует конфигурацию коммутатора, в зависимости от переданных параметров,
                            использует для этого оставильные функции
 '''
 import yaml
+import pprint
 
 
 access_dict = { 'FastEthernet0/12':10,
@@ -39,7 +41,33 @@ def generate_access_config(access, psecurity=False):
 
     Возвращает список всех команд, которые были сгенерированы на основе шаблона
     """
-    pass
+
+    with open('sw_templates.yaml') as f:
+        templates = yaml.load(f)
+    
+    access_conf = []
+
+    for intf in access_dict:
+        
+        access_conf.append("interface {}".format(intf))
+        
+        for line in templates["access"]:
+        
+            if line.startswith("switchport access"):
+                access_conf.append(" switchport access vlan {}".format(access_dict[intf]))
+        
+            else:
+                access_conf.append(" " + line)
+        
+        if psecurity == True:
+        
+            for line in templates["psecurity"]:
+                access_conf.append(" " + line)
+
+    data = "\n".join([line for line in access_conf])
+    print data
+
+
 
 def generate_trunk_config(trunk):
     """
@@ -51,8 +79,27 @@ def generate_trunk_config(trunk):
 
     Возвращает список всех команд, которые были сгенерированы на основе шаблона
     """
-    pass
+    with open('sw_templates.yaml') as f:
+        templates = yaml.load(f)
 
+    trunk_conf = []
+
+    for intf in trunk_dict:
+    
+        trunk_conf.append("interface {}".format(intf))
+    
+        for line in templates["trunk"]:
+    
+            if line.endswith("allowed vlan"):
+                vlans = ",".join([str(vid) for vid in trunk_dict[intf]])
+                trunk_conf.append(" switchport trunk allowed vlan {}".format(vlans))
+
+            else:
+                trunk_conf.append(" " + line)
+
+    data = "\n".join([line for line in trunk_conf])
+    print data
+    
 def generate_ospf_config(filename):
     """
     filename - имя файла в формате YAML, в котором находится шаблон ospf.
@@ -94,3 +141,6 @@ def generate_switch_config(access=True, psecurity=False, trunk=True,
 sw1 = generate_switch_config()
 sw2 = generate_switch_config(psecurity=True, alias=True)
 sw3 = generate_switch_config(ospf=False)
+
+#generate_access_config(access_dict, psecurity=True)
+#generate_trunk_config(trunk_dict)
