@@ -15,8 +15,6 @@
                            использует для этого оставильные функции
 '''
 import yaml
-import pprint
-
 
 access_dict = { 'FastEthernet0/12':10,
                 'FastEthernet0/14':11,
@@ -26,6 +24,20 @@ access_dict = { 'FastEthernet0/12':10,
 trunk_dict = { 'FastEthernet0/1':[10,20,30],
                'FastEthernet0/2':[11,30],
                'FastEthernet0/4':[17] }
+
+# File with templates for ospf, mngmt, alias
+file_template = "templates.yaml"
+
+# File with sw templates for access, trunk ports and psecurity
+sw_templates = "sw_templates.yaml"
+
+
+def read_file(file_to_read):
+    """ Function opens file and reads it"""
+
+    with open(file_to_read) as f:
+        result = yaml.load(f)
+        return result
 
 
 def generate_access_config(access, psecurity=False):
@@ -42,9 +54,8 @@ def generate_access_config(access, psecurity=False):
     Возвращает список всех команд, которые были сгенерированы на основе шаблона
     """
 
-    with open('sw_templates.yaml') as f:
-        templates = yaml.load(f)
-    
+    templates = read_file(sw_templates)
+
     access_conf = []
 
     for intf in access_dict:
@@ -65,8 +76,7 @@ def generate_access_config(access, psecurity=False):
                 access_conf.append(" " + line)
 
     data = "\n".join([line for line in access_conf])
-    print data
-
+    return data
 
 
 def generate_trunk_config(trunk):
@@ -79,8 +89,8 @@ def generate_trunk_config(trunk):
 
     Возвращает список всех команд, которые были сгенерированы на основе шаблона
     """
-    with open('sw_templates.yaml') as f:
-        templates = yaml.load(f)
+
+    templates = read_file(sw_templates)
 
     trunk_conf = []
 
@@ -98,8 +108,9 @@ def generate_trunk_config(trunk):
                 trunk_conf.append(" " + line)
 
     data = "\n".join([line for line in trunk_conf])
-    print data
+    return data
     
+
 def generate_ospf_config(filename):
     """
     filename - имя файла в формате YAML, в котором находится шаблон ospf.
@@ -119,7 +130,7 @@ def generate_ospf_config(filename):
             ospf_conf.append(" {}".format(line))
 
     data = "\n".join([line for line in ospf_conf])
-    print data
+    return data
 
 
 def generate_mngmt_config(filename):
@@ -128,7 +139,17 @@ def generate_mngmt_config(filename):
 
     Возвращает список всех команд, которые были сгенерированы на основе шаблона
     """
-    pass
+
+    templates = read_file(filename)
+
+    mngmt_conf = []
+
+    for line in templates["mngmt"]:
+        mngmt_conf.append(line)
+
+    data = "\n".join([line for line in mngmt_conf])
+    return data
+
 
 def generate_alias_config(filename):
     """
@@ -136,7 +157,17 @@ def generate_alias_config(filename):
 
     Возвращает список всех команд, которые были сгенерированы на основе шаблона
     """
-    pass
+    
+    templates = read_file(filename)
+
+    alias_conf = []
+
+    for line in templates["alias"]:
+        alias_conf.append(line)
+
+    data = "\n".join([line for line in alias_conf])
+    return data
+
 
 def generate_switch_config(access=True, psecurity=False, trunk=True,
                            ospf=True, mngmt=True, alias=False):
@@ -146,14 +177,27 @@ def generate_switch_config(access=True, psecurity=False, trunk=True,
 
     Возвращает список всех команд, которые были сгенерированы на основе шаблона
     """
-    pass
+    
+    if access == True and psecurity == True:
+        print generate_access_config(access_dict, psecurity=True)
+    elif access == True:
+        print generate_access_config(access_dict, psecurity=False)
+    if trunk == True:
+        print generate_trunk_config(trunk_dict)
+    if ospf == True:
+        print generate_ospf_config(file_template)
+    if mngmt == True:
+        print generate_mngmt_config(file_template)
+    if alias == True:
+        print generate_alias_config(file_template)
+
 
 # Сгенерировать конфигурации для разных коммутаторов:
-
+print "\n\nConfig for SW1"
 sw1 = generate_switch_config()
-sw2 = generate_switch_config(psecurity=True, alias=True)
-sw3 = generate_switch_config(ospf=False)
 
-#generate_access_config(access_dict, psecurity=True)
-#generate_trunk_config(trunk_dict)
-generate_ospf_config("templates.yaml")
+print "\n\nConfig for SW2"
+sw2 = generate_switch_config(psecurity=True, alias=True)
+
+print "\n\nConfig for SW3"
+sw3 = generate_switch_config(ospf=False)
