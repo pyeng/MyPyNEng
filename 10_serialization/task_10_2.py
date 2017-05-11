@@ -108,6 +108,18 @@ def generate_ospf_config(filename):
     """
     templates = yaml.load(open(filename))
 
+    ospf_conf = []
+
+    for position, line in enumerate(templates["ospf"]):
+
+        if position == 0:
+            ospf_conf.append(line)
+
+        else:
+            ospf_conf.append(" {}".format(line))
+
+    data = "\n".join([line for line in ospf_conf])
+    print data
 
 
 def generate_mngmt_config(filename):
@@ -144,3 +156,4 @@ sw3 = generate_switch_config(ospf=False)
 
 #generate_access_config(access_dict, psecurity=True)
 #generate_trunk_config(trunk_dict)
+generate_ospf_config("templates.yaml")
