@@ -25,3 +25,46 @@ R6           Fa 0/2          143           R S I           2811       Fa 0/0
 
 Проверить работу функции на содержимом файла sh_cdp_n_sw1.txt
 '''
+
+import re
+from pprint import pprint
+
+def parse_sh_cdp_neighbors(filename):
+    """ Function return dictionary with data from filename with CDP data"""
+
+    cdp_data = {}
+
+    # RegExp for matching hostname 
+    reg_host = ".+[>#]"
+    # Hostname of device on which running "show cdp neigh"
+    hostname = (re.search(reg_host, filename)).group()[:-1]
+
+    # RegExp for matching neighbor, local interface, remote interface
+    regexp = re.compile("""(?P<neigh>\w+) +(?P<lcl_int>\w+\s\d+/\d+).+?\
+    (?P<rmt_int>\w+\s\d+/\d+)""")
+
+    cdp_data[hostname] = {}
+
+    for line in filename.split("\n"):
+
+        match = regexp.search(line)
+
+        if match != None:
+            (neigh, local, remote) = match.groups()
+            cdp_data[hostname][local] = {neigh:remote}
+
+    return cdp_data
+
+
+# File with CDP data
+file = "sh_cdp_n_sw1.txt"
+
+# Opening and reading file to the var
+with open(file, "r") as f:
+    output = (f.read()).strip()
+
+    # Passing output of the file to func
+    result = parse_sh_cdp_neighbors(output)
+
+    # Result of execution func
+    pprint(result)
