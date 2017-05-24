@@ -30,3 +30,37 @@
 
 Не копировать код функции parse_sh_cdp_neighbors
 '''
+
+import glob
+import yaml
+from task_10_3 import parse_sh_cdp_neighbors
+
+
+def generate_topology_from_cdp(list_of_files, save_to_file=True, 
+                                topology_filename="topology.yaml"):
+
+    # Dict that contain output of sh cdp neigh
+    topology = {}
+
+    # For loop that walk by file in list_of_files
+    for file in list_of_files:
+
+        # Get content from file sh_cdp_n__*
+        with open(file, "r") as f:
+            output = (f.read()).strip()
+
+            # Merge output from different dict
+            for key, values in parse_sh_cdp_neighbors(output).items():
+                topology[key] = values
+
+    # If topology_filename is True -> write dict to file
+    if save_to_file:
+        with open(topology_filename, 'w') as f:
+            f.write(yaml.dump(topology))
+
+
+if __name__ == '__main__':
+
+    sh_cdp_files = glob.glob("sh_cdp_n_*")
+
+    generate_topology_from_cdp(sh_cdp_files)
