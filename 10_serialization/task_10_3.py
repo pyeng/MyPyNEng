@@ -40,8 +40,10 @@ def parse_sh_cdp_neighbors(filename):
     hostname = (re.search(reg_host, filename)).group()[:-1]
 
     # RegExp for matching neighbor, local interface, remote interface
+    #regexp = re.compile("""(?P<neigh>\w+) +(?P<lcl_int>\w+\s\d+/\d+).+?\
+    #(?P<rmt_int>\w+\s\d+/\d+)""")
     regexp = re.compile("""(?P<neigh>\w+) +(?P<lcl_int>\w+\s\d+/\d+).+?\
-    (?P<rmt_int>\w+\s\d+/\d+)""")
+(?P<rmt_int>\w+\s\d+/\d+)""")
 
     cdp_data[hostname] = {}
 
@@ -55,16 +57,17 @@ def parse_sh_cdp_neighbors(filename):
 
     return cdp_data
 
+if __name__ == '__main__':
 
-# File with CDP data
-file = "sh_cdp_n_sw1.txt"
+    # File with CDP data
+    file = "sh_cdp_n_sw1.txt"
 
-# Opening and reading file to the var
-with open(file, "r") as f:
-    output = (f.read()).strip()
+    # Opening and reading file to the var
+    with open(file, "r") as f:
+        output = (f.read()).strip()
 
-    # Passing output of the file to func
-    result = parse_sh_cdp_neighbors(output)
+        # Passing output of the file to func
+        result = parse_sh_cdp_neighbors(output)
 
-    # Result of execution func
-    pprint(result)
+        # Result of execution func
+        pprint(result)
