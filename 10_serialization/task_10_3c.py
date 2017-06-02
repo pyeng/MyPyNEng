@@ -21,3 +21,35 @@
 > pip install graphviz
 
 '''
+
+import yaml
+from draw_network_graph import draw_topology
+
+
+topology_file = "topology.yaml"
+
+# Get topology info from yaml file
+with open(topology_file, "r") as f:
+    topology = yaml.load(f)
+
+    # Lists for stroring keys and values from topology file
+    keys = []
+    values = []
+
+    # Fillinf lists "keys" and "values"
+    for k, v in topology.items():
+
+        for i in v.keys():
+            keys.append((k, i))
+
+        for i in v.values():
+            values.append(i.items()[0])
+
+    # Delete duplicate connections
+    topo = dict(zip(keys, values))
+    for i in topo.keys():
+        if i in topo.values():
+            del(topo[i])
+           
+    # Create topology graph.svg file
+    draw_topology(topo, out_filename="graph")
